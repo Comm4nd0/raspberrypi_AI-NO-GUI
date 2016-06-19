@@ -1,4 +1,14 @@
+This is my RaspberryPi voice control system. it's not really an AI because it doesn't learn. However, what it can do is this...
+
+ * Send text messages
+ * Send emails
+ * Search wikipeida and read back info
+ * Search Wolfram and read back info
+ * Play music
+ * Stop read-back or play-back
+
 INSTALL THESE:
+sudo apt-get update && upgrade -y
 sudo apt-get install proftpd
 sudo pip3 install SpeechRecognition
 sudo apt-get install portaudio19-dev python-all-dev python3-all-dev && sudo pip3 install pyaudio
