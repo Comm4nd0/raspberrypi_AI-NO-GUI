@@ -20,7 +20,7 @@ def wiki(query):
     return para
 
 def wolf(query):
-    client = wolframalpha.Client("57P9W4-958KYX45A8")
+    client = wolframalpha.Client("ADD YOUR API KEY HERE!")
     res = client.query(query)
 
     a = len(res.pods)
