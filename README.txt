@@ -42,5 +42,8 @@ create a twilio account and generate and SID, AuthToken and phone number
 add your mobile numbers in
 and you personal email addresses in
 
+All these files must be in this dir:
+/home/pi/computer/(ALL FILES HERE)
+
 run computer.py and enjoy!
 hint: sudo python3 computer.py
