@@ -6,6 +6,16 @@ This is my RaspberryPi voice control system. it's not really an AI because it do
  * Search Wolfram and read back info
  * Play music
  * Stop read-back or play-back
+ 
+Example commands:
+"computer, send a text to marco saying get down the pub now!"
+"computer, send an email to cat saying i'm down the pub, be back later"
+"computer, tell me about where babies come from"
+"computer, what is the time in china"
+"computer, play linkin park"
+"computer, stop music"
+
+computer.py in the main file so if you want to look at all the jucy bits, that's where to start.
 
 INSTALL THESE:
 sudo apt-get update && upgrade -y
@@ -33,5 +43,4 @@ add your mobile numbers in
 and you personal email addresses in
 
 run computer.py and enjoy!
-hint
-sudo python3 computer.py
+hint: sudo python3 computer.py
