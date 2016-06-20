@@ -5,7 +5,7 @@ import os
 import speech_recognition as sr
 import subprocess
 import random
-from music import youtube
+from music import youtube, continuePlaying
 from search import google, wiki, wolf
 from comms import sms, email
 import time
@@ -21,8 +21,9 @@ def speak(say):
     print("GENERATING VOICE")
     tts = gTTS(text=say, lang='en')
     tts.save("voice/temp/temp.mp3")
-    voice = "runuser -l pi -c 'cvlc --play-and-exit /home/pi/computer/voice/temp/temp.mp3 &' "
+    voice = "runuser -l pi -c 'cvlc --play-and-exit /home/pi/computer/voice/temp/temp.mp3' "
     subprocess.call(voice, shell=True)
+    endProg(command="exit")
     return
 
 def listen():
@@ -36,6 +37,14 @@ def listen():
             keyword = initiate[:8]
             COMMAND = str(initiate[9:])
             if keyword == "computer":
+                if "please" == COMMAND[:6]:
+                    space = COMMAND.index(" ")
+                    COMMAND = COMMAND[space+1:]
+
+                    if "can you" or "may you" == COMMAND[:7]:
+                        space = COMMAND.index("you")
+                        COMMAND = COMMAND[space+4:]
+                        
                 command(COMMAND)
             else:
                 print ("Oh, never mind.")
@@ -43,16 +52,14 @@ def listen():
             print(e)
 
 def command(command):
-    subprocess.call("aplay /home/pi/computer/sounds/204.wav", shell=True)
-    
     try:
         if command in exitCommands:
             print ("Exiting")
             listen()
         else:
             print("Sounded like you said " + command)
-
-            if "send" in command:
+            
+            if "send" in command[:10]:
                 _thread.start_new_thread(communicate(command))
             if "text" in command:
                 _thread.start_new_thread(communicate(command))
@@ -60,10 +67,12 @@ def command(command):
                 _thread.start_new_thread(wiki_search(command))
             if "what is" in command:
                 _thread.start_new_thread(wolf_search(command))
-            if "play" in command:
-                play(command)
+            if "play" or "continue" in command:
+                _thread.start_new_thread(play(command))
             if "stop" in command:
-                endProg(command)
+                _thread.start_new_thread(endProg(command))
+            else:
+                subprocess.call("aplay /home/pi/computer/sounds/224.wav", shell=True)
             startProc()
             listen()
     except:
@@ -71,6 +80,7 @@ def command(command):
     return
 
 def wiki_search(command):
+    success()
     pos = command.index("tell me")
     search = command[pos+6:]
     res = wiki(search)
@@ -79,15 +89,20 @@ def wiki_search(command):
     return
 
 def wolf_search(command):
+    success()
     res = wolf(command)
     res = str(res)
     speak(res)
     return
     
 def play(command):
+    success()
     pos = command.index("play")
     query = command[pos+5:]
-    youtube(query)
+    if query == "last song" or "the last song":
+        continuePlaying()
+    else:
+        youtube(query)
     return
 
 def getnameandmess(command):
@@ -102,6 +117,7 @@ def getnameandmess(command):
     return name, message
 
 def communicate(command):
+    success()
     if "message" or "text"in command:
         name, message = getnameandmess(command)
         res = sms(name, message)
@@ -117,11 +133,16 @@ def communicate(command):
     return
 
 def endProg(command):
+    success()
     if "stop" or "talking" in command:
         for proc in psutil.process_iter():
             if proc.name() == PROCNAME:
                 proc.kill()
+                print("VLC ENDED!")
     return
+
+def success():
+    subprocess.call("aplay /home/pi/computer/sounds/204.wav", shell=True)
 
 def startProc():
     subprocess.Popen("runuser -l pi -c 'start-pulseaudio-x11 &'", shell=True)

@@ -7,6 +7,9 @@ import webbrowser
 import pafy
 import subprocess
 import os
+import psutil
+
+PROCNAME = "vlc"
 
 def youtube(query):
     query_string = urllib.parse.urlencode({"search_query" : query})
@@ -21,8 +24,22 @@ def youtube(query):
     bestaudio.download()
     oldtitlepath = "/home/pi/computer/" + title
     os.rename(oldtitlepath, 'song.webm')
-    command = "runuser -l pi -c 'cvlc --play-and-exit /home/pi/computer/song.webm &'"
+    command = "runuser -l pi -c 'cvlc --play-and-exit /home/pi/computer/song.webm'"
     subprocess.call(command, shell=True)
-    
+    endProg(command="exit")
     return
 
+def continuePlaying():
+    command = "runuser -l pi -c 'cvlc --play-and-exit /home/pi/computer/song.webm'"
+    subprocess.call(command, shell=True)
+    endProg(command="exit")
+    return
+
+def endProg(command):
+    success()
+    if "stop" or "talking" in command:
+        for proc in psutil.process_iter():
+            if proc.name() == PROCNAME:
+                proc.kill()
+                print("VLC ENDED!")
+    return

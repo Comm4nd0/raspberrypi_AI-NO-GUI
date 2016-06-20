@@ -3,8 +3,13 @@ from bs4 import BeautifulSoup
 from google import search
 import wikipedia
 import wolframalpha
+import configparser
+
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 def google(query):
+    #Not used yet but i might make it a fall back if wiki of wolf doesn't return any res
     for url in search(query, stop=5):
         add = url
     html = urllib.request.urlopen(add).read()
@@ -16,11 +21,14 @@ def google(query):
     return visible_text
 
 def wiki(query):
+    #wiki search and return top 3 sentences
     para = wikipedia.summary(query, sentences=3)
     return para
 
 def wolf(query):
-    client = wolframalpha.Client("57P9W4-958KYX45A8")
+    #wolfram search and return all text
+    wolfAPIkey = config['wolfram']['apikey']
+    client = wolframalpha.Client(wolfAPIkey)
     res = client.query(query)
 
     a = len(res.pods)
