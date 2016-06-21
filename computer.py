@@ -8,6 +8,7 @@ import random
 from music import youtube, continuePlaying
 from search import google, wiki, wolf
 from comms import sms, email
+from helpme import helpint
 import time
 import psutil
 import _thread
@@ -18,6 +19,7 @@ PROCNAME = "vlc"
 COMMAND = " "
 
 def speak(say):
+    endProg(command='music')
     print("GENERATING VOICE")
     tts = gTTS(text=say, lang='en')
     tts.save("voice/temp/temp.mp3")
@@ -59,7 +61,7 @@ def command(command):
         else:
             print("Sounded like you said " + command)
             
-            if "send" in command[:10]:
+            if "send" in command:
                 _thread.start_new_thread(communicate(command))
             if "text" in command:
                 _thread.start_new_thread(communicate(command))
@@ -67,16 +69,24 @@ def command(command):
                 _thread.start_new_thread(wiki_search(command))
             if "what is" in command:
                 _thread.start_new_thread(wolf_search(command))
-            if "play" or "continue" in command:
+            if "continue" in command:
+                endProg(command='music')
+                _thread.start_new_thread(continuePlaying())
+            if "play" in command:
+                endProg(command='music')
                 _thread.start_new_thread(play(command))
             if "stop" in command:
                 _thread.start_new_thread(endProg(command))
+            if "help" in command:
+                print("HELPING!")
+                helpint()
             else:
                 subprocess.call("aplay /home/pi/computer/sounds/224.wav", shell=True)
             startProc()
             listen()
-    except:
-        print("Could not understand audio")
+    except Exception as e:
+        print(e)
+
     return
 
 def wiki_search(command):
@@ -99,10 +109,7 @@ def play(command):
     success()
     pos = command.index("play")
     query = command[pos+5:]
-    if query == "last song" or "the last song":
-        continuePlaying()
-    else:
-        youtube(query)
+    youtube(query)
     return
 
 def getnameandmess(command):
