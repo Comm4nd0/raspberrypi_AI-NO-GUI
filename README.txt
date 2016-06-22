@@ -1,3 +1,5 @@
+# THIS REPO HAS BEEN SUPERSEEDED WITH https://github.com/Comm4nd0/LUCA-AI
+
 This is my RaspberryPi voice control system. it's not really an AI because it doesn't learn. However, what it can do is this...
 
  * Send text messages
