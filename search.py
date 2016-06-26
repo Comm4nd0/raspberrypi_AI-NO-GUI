@@ -26,13 +26,10 @@ def wiki(query):
     return para
 
 def wolf(query):
-<<<<<<< HEAD
     #wolfram search and return all text
     wolfAPIkey = config['wolfram']['apikey']
     client = wolframalpha.Client(wolfAPIkey)
-=======
     client = wolframalpha.Client("ADD YOUR API KEY HERE!")
->>>>>>> 9f827edab544ed3977ad545047fe576b14cc7514
     res = client.query(query)
 
     a = len(res.pods)
